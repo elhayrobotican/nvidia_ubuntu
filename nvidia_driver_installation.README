@@ -1,0 +1,48 @@
+
+
+Ubuntu 14.04 through 16.10 Please note that, nouveau drivers manual removal is required only if you are going to install the proprietary nvidia drivers yourself. If this is not the case then directly install the required graphic drivers from System->Administration->Hardware drivers. Its the recommended and the most convenient way available.
+
+We'll blacklist all the culprit modules, remove all the nvidia* packages and as an extra step we may have to update the initramfs disk because it could be configured to load the modules at startup.
+
+    Blacklist the modules. Open the blacklist.conf file.
+
+    sudo vim /etc/modprobe.d/blacklist.conf
+
+    add the following modules in the file.
+
+    blacklist amd76x_edac #this might not be required for x86 32 bit users.
+    blacklist vga16fb
+    blacklist nouveau
+    blacklist rivafb
+    blacklist nvidiafb
+    blacklist rivatv
+
+    Save the file and exit.
+
+    Remove all the nvidia* packages
+
+    sudo apt-get remove --purge nvidia*
+
+    Once you are done with the steps above, reboot, stop the display manager and try to install nvidia drivers.
+
+    Press Ctrl+Alt+F1. Once you are in the text mode, stop the display manager. This will end all the applications, so you better close them yourself before completing this step.
+
+    To stop the display manager use the following command
+
+    sudo sudo service lightdm stop
+
+    gdm is for gnome display manager. If you are using kde then use kdm. If you are using lightdm as your display manager use sudo service lightdm stop
+
+    Now, run the driver package that you downloaded from Nvidia’s website.
+
+    sudo ./NVIDIA-Linux-x86-260.19.44.run
+
+Note: If you still get the error related to nouveau drivers then you are probably required to update the initramfs disk. Probably it might be configured to load the nouveau drivers. Don't reboot or poweroff, run this command to update the initramfs disk.
+
+    sudo update-initramfs -u
+
+Now reboot and repeat the step 3. This time things should go smoothly.
+
+type 
+$ nvidia-settings  
+in terminal to see if nvidia driver was installed correctly
